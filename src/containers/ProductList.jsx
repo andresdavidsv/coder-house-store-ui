@@ -3,10 +3,8 @@ import ProductItem from '@components/ProductItem';
 import '@styles/ProductList.scss';
 import useGetProducts from '@hooks/useGetProducts';
 
-const API = 'http://localhost:3001/api/products';
-
 const ProductList = () => {
-  const { products } = useGetProducts(API);
+  const { products } = useGetProducts();
   return (
     <section className="main-container">
       <div className="ProductList">
