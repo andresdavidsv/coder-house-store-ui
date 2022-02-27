@@ -18,10 +18,16 @@ const useInitialState = () => {
       cart: state.cart.filter((items, index) => index != indexValue),
     });
   };
+  const clearCart = () => {
+    setState({
+      cart: [],
+    });
+  };
   return {
     state,
     addToCart,
     removeFromCart,
+    clearCart,
   };
 };
 

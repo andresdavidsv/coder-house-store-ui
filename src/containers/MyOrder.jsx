@@ -1,12 +1,23 @@
 import React, { useContext } from 'react';
 import AppContext from '@context/AppContext';
 import OrderItem from '@components/OrderItem';
+import { addCart, addCartProduct } from '@services/api/carts';
+import { useNavigate } from 'react-router-dom';
 import '@styles/MyOrder.scss';
 
 import arrowIcon from '@icons/flechita.svg';
 
 const MyOrder = () => {
-  const { state } = useContext(AppContext);
+  const { state, removeFromCart } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  const handleCheckout = async () => {
+    addCart().then((res) => {
+      addCartProduct(res.data, state.cart);
+      removeFromCart();
+      window.location.reload();
+    });
+  };
   const sumTotal = () => {
     const reducer = (accum, currentValue) => accum + currentValue.price;
     const sum = state.cart.reduce(reducer, 0);
@@ -32,7 +43,9 @@ const MyOrder = () => {
           </p>
           <p>${sumTotal()}</p>
         </div>
-        <button className="primary-button">Checkout</button>
+        <button className="primary-button" onClick={() => handleCheckout()}>
+          Checkout
+        </button>
       </div>
     </aside>
   );

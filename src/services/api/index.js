@@ -12,6 +12,11 @@ const endPoints = {
     updateProducts: (id) => `${API}/api/products/${id}/`,
     deleteProducts: (id) => `${API}/api/products/${id}/`,
   },
+  carts: {
+    addCartsProducts: (id) => `${API}/api/carts/${id}/products`,
+    addCarts: `${API}/api/carts`,
+    deleteCarts: (id) => `${API}/api/carts/${id}/`,
+  },
   files: {
     addImage: `${API}/api/files/upload/`,
   },
