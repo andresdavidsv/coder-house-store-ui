@@ -1,5 +1,6 @@
 import React, { useState, useContext, createContext } from 'react';
 import Cookie from 'js-cookie';
+import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import endPoints from '@services/api/';
 
@@ -40,6 +41,8 @@ function useProvideAuth() {
     if (data.token) {
       const token = data.token;
       Cookie.set('token', token, { expires: 5 });
+      const decoded = jwt_decode(token);
+      localStorage.setItem('scopes', JSON.stringify(decoded.scopes));
       setUser(data.user);
       axios.defaults.headers.Authorization = `Bear ${token}`;
     }
@@ -63,6 +66,7 @@ function useProvideAuth() {
 
   const logout = () => {
     Cookie.remove('token');
+    localStorage.clear();
     setUser(null);
     delete axios.defaults.headers.authorization;
     window.location.href = '/login';

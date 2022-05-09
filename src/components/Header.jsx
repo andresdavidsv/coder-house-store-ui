@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '@styles/Header.scss';
 
@@ -12,7 +12,16 @@ import logo from '@logos/logo_yard_sale.svg';
 
 import AppContext from '@context/AppContext';
 
+// const scopes = localStorage.getItem('scopes');
+
 const Header = () => {
+  let scopes;
+  useEffect(() => {
+    scopes = localStorage.getItem('scopes');
+    window.addEventListener('storage', () => {
+      window.location.reload();
+    });
+  })
   const navigate = useNavigate();
   const [toggle, setToggle] = useState(false);
   const [toggleOrders, setToggleOrder] = useState(false);
@@ -44,12 +53,22 @@ const Header = () => {
           <li>
             <Link to="/">Products</Link>
           </li>
-          <li>
-            <Link to="/orders">My Orders</Link>
-          </li>
-          <li>
-            <Link to="/createproduct">Create Product</Link>
-          </li>
+          {scopes &&
+            JSON.parse(scopes).find((scope) => scope === 'read:carts') && (
+              <>
+                <li>
+                  <Link to="/orders">My Orders</Link>
+                </li>
+              </>
+            )}
+          {scopes &&
+            JSON.parse(scopes).find((scope) => scope === 'create:carts') && (
+              <>
+                <li>
+                  <Link to="/createproduct">Create Product</Link>
+                </li>
+              </>
+            )}
         </ul>
       </div>
       <div className="navbar-right">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from '@containers/Layout';
 import Home from '@pages/Home';
@@ -19,7 +19,13 @@ import '@styles/global.css';
 import CreateProduct from '@pages/CreateProduct';
 import EditProduct from '@pages/EditProduct';
 
+
 const App = () => {
+  let scopes;
+  window.addEventListener('storage', () => {
+    window.location.reload();
+    scopes = localStorage.getItem('scopes');
+  });
   const initialState = useInitialState();
   return (
     <ProviderAuth>
@@ -34,14 +40,39 @@ const App = () => {
                 path="/password-recovery"
                 element={<PasswordRecovery />}
               />
-              <Route exact path="/send-email" element={<SendEmail />} />
               <Route exact path="/new-password" element={<NewPassword />} />
-              <Route exact path="/account" element={<MyAccount />} />
               <Route exact path="/signup" element={<CreateAccount />} />
-              <Route exact path="/checkout" element={<Checkout />} />
-              <Route exact path="/createproduct" element={<CreateProduct />} />
-              <Route exact path="/editproduct/:id" element={<EditProduct />} />
-              <Route exact path="/orders" element={<Orders />} />
+              <Route exact path="/account" element={<MyAccount />} />
+              {scopes && (
+                <>
+                  <Route exact path="/checkout" element={<Checkout />} />
+                  <Route exact path="/send-email" element={<SendEmail />} />
+                </>
+              )}
+              {scopes &&
+                JSON.parse(scopes).find(
+                  (scope) => scope === 'create:products'
+                ) && (
+                  <Route
+                    exact
+                    path="/createproduct"
+                    element={<CreateProduct />}
+                  />
+                )}
+              {scopes &&
+                JSON.parse(scopes).find(
+                  (scope) => scope === 'update:products'
+                ) && (
+                  <Route
+                    exact
+                    path="/editproduct/:id"
+                    element={<EditProduct />}
+                  />
+                )}
+              {scopes &&
+                JSON.parse(scopes).find((scope) => scope === 'read:carts') && (
+                  <Route exact path="/orders" element={<Orders />} />
+                )}
               <Route exact path="/products/:id" element={<ProductInfo />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
